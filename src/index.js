@@ -1,7 +1,6 @@
 import './style.css';
 import Humidity from './humidity.png';
 import Gust from './gust.png';
-import Search from './search.png'
 
   function createInterface() {
     const container = document.createElement('div');
@@ -32,26 +31,56 @@ import Search from './search.png'
     submit.classList.add('buttonstyle')
     form.classList.add('formstyle')
     
-    
-    appName.textContent = "City Weather Report"
+    appName.textContent = "Weather Report"
     searchBar.type = 'search';
     searchBar.id = 'search';
-    searchBar.placeholder = "New York"
+    searchBar.placeholder = "California"
+    
+    class Imperial {
+        constructor() {
+            this.name = "imperial"
+            this.unit = "°F"
+            this.speed = "mph"
+            this.temperature;
+        }
+        changeToFahrenheit() {
+            return this.temperature = ((metric.temperature * (9/5) + 32))
+        }
+    }
+
+    class Metric {
+        constructor() {
+            this.name = "metric";
+            this.unit = "°C"
+            this.speed = "m/s"
+            this.temperature;
+        }
+        changeToCelsius() {
+            return this.temperature = ((imperial.temperature - 32) * (5/9))
+            
+        }
+    }
+
+    const imperial = new Imperial();
+    const metric = new Metric();
+
+    let currentUnit = imperial;
+    let currentCity = "California";
 
     async function showWeather() {
         try {
-            const response = await fetch('https://api.openweathermap.org/data/2.5/weather?q=New+York&appid=78c5b0d1c5ebe06e9744589142cf4344&units=imperial', { mode:'cors'});
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode:'cors'});
             const weatherData = await response.json();
             console.log(weatherData);
-            console.log((Date.now()  + 1000 * weatherData.timezone))
+            console.log(Date.now()  + (1000 * parseInt(weatherData.timezone)))
             const iconLink = `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
             return (cityName.textContent = weatherData.name + ", " + weatherData.sys.country,
                 weatherIcon.src = iconLink,
                 weatherConditionImage.src = iconLink,
-                weatherTemperature.textContent = Math.round(weatherData.main.temp) + "°F",
-                feelsLikeTemp.textContent = "Feels like " + Math.round(weatherData.main.feels_like)+ "°F",
+                weatherTemperature.textContent = Math.round(weatherData.main.temp) + currentUnit.unit,
+                feelsLikeTemp.textContent = "Feels like " + Math.round(weatherData.main.feels_like) + currentUnit.unit,
                 weatherConditionData.textContent = "Condition: " + weatherData.weather[0].main,
-                windConditionData.textContent = "Wind: " + Math.round(weatherData.wind.speed) + " mph" , 
+                windConditionData.textContent = "Wind: " + Math.round(weatherData.wind.speed) + " " + currentUnit.speed , 
                 humidityConditionData.textContent = "Humidity: " + Math.round(weatherData.main.humidity) + "%",
                 console.log(weatherData)
                 );
@@ -62,33 +91,46 @@ import Search from './search.png'
     showWeather();
 
     form.addEventListener('submit', function(e) {
+        const searchInput = document.getElementById('search');
+        currentCity = searchInput.value;
         getWeatherSearch();
         e.preventDefault();
         form.reset();
     });
 
+    weatherTemperature.addEventListener('click', function() {
+        if (currentUnit === imperial) {
+            currentUnit = metric;
+            console.log(currentUnit)
+            getWeatherSearch();
+        } else if (currentUnit === metric) {
+            currentUnit = imperial;
+            getWeatherSearch();
+            console.log(currentUnit)
+        }
+    });
+
     async function getWeatherSearch() {
         try {
-            const searchInput = document.getElementById('search');
-            const searchValue = searchInput.value;
-            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${searchValue}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=imperial`, { mode: 'cors' });
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode: 'cors' });
             const weatherData = await response.json();
             const iconLink = `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
             return (cityName.textContent = weatherData.name + ", " + weatherData.sys.country,
                 weatherIcon.src = iconLink,
                 weatherConditionImage.src = iconLink,
-                weatherTemperature.textContent = Math.round(weatherData.main.temp)+ "°F", 
-                feelsLikeTemp.textContent = "Feels like " + Math.round(weatherData.main.feels_like) + "°F",
+                weatherTemperature.textContent = Math.round(weatherData.main.temp) + currentUnit.unit, 
+                feelsLikeTemp.textContent = "Feels like " + Math.round(weatherData.main.feels_like) + currentUnit.unit,
                 weatherConditionData.textContent = "Condition: " + weatherData.weather[0].main,
-                windConditionData.textContent = "Wind: " + Math.round(weatherData.wind.speed) + " mph", 
+                windConditionData.textContent = "Wind: " + Math.round(weatherData.wind.speed) + " "+ currentUnit.speed, 
                 humidityConditionData.textContent = "Humidity: " + Math.round(weatherData.main.humidity) + "%",
                 console.log(weatherData)
-                
             );
         } catch(error) {
             console.error('error', error);
         } 
     };
+
+
 
     weatherBox.appendChild(cityName);
     weatherIconAndTemp.appendChild(weatherIcon);
