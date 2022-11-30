@@ -9,3 +9,11 @@
 .formstyle {
     display: flex;
 }
+
+.daytime {
+    background-color: rgba(254, 234, 165, 0.6)
+}
+
+.nighttime {
+    background-color: rgba(0, 109, 178, 0.5)
+}

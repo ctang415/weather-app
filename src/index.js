@@ -71,9 +71,16 @@ import Gust from './gust.png';
         try {
             const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode:'cors'});
             const weatherData = await response.json();
-            console.log(weatherData);
-            console.log(Date.now()  + (1000 * parseInt(weatherData.timezone)))
+            console.log(weatherData)
             const iconLink = `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
+            let pngFile = weatherData.weather[0].icon
+            let result = pngFile.includes("d");
+            if (result === true) {
+                container.classList.add('daytime')
+            } else {
+                container.classList.add('nighttime')
+            }
+            console.log(result)
             return (cityName.textContent = weatherData.name + ", " + weatherData.sys.country,
                 weatherIcon.src = iconLink,
                 weatherConditionImage.src = iconLink,
@@ -115,6 +122,14 @@ import Gust from './gust.png';
             const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode: 'cors' });
             const weatherData = await response.json();
             const iconLink = `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
+            let pngFile = weatherData.weather[0].icon
+            let result = pngFile.includes("d");
+            console.log(result)
+            if (result === true) {
+                container.classList.add('daytime')
+            } else {
+                container.classList.add('nighttime')
+            }
             return (cityName.textContent = weatherData.name + ", " + weatherData.sys.country,
                 weatherIcon.src = iconLink,
                 weatherConditionImage.src = iconLink,
@@ -129,7 +144,6 @@ import Gust from './gust.png';
             console.error('error', error);
         } 
     };
-
 
 
     weatherBox.appendChild(cityName);
