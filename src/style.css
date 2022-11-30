@@ -1,0 +1,11 @@
+.buttonstyle {
+    background: url('./search.png');
+    background-size: contain;
+    border: none;
+    cursor: pointer;
+    width: 20px;
+}
+
+.formstyle {
+    display: flex;
+}
