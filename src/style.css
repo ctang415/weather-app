@@ -102,12 +102,14 @@
 
 .daytime {
     background: url('./day.jpg');
+    background-position: -0.2em;
     background-size: cover;
     color: black;
 }
 
 .nighttime {
     background: url('./night.jpg');
+    background-position: 0.1em;
     background-size: cover;
     color: white;
 }
