@@ -1,19 +1,74 @@
+@import url('https://fonts.googleapis.com/css?family=Fjalla+One&display=swap');
+
+* {
+    font-family: 'Fjalla One';
+}
+
 .buttonstyle {
     background: url('./search.png');
-    background-size: contain;
+    background-size: cover;
     border: none;
     cursor: pointer;
-    width: 20px;
+    width: 35px;
+}
+
+.input {
+    width: 80%;
+    padding: 0.7vw;
+}
+
+.header {
+    margin-top: 5px;
+    font-size: 3em;
+}
+
+.box {
+    display: flex;
+    justify-content: center;
 }
 
 .formstyle {
     display: flex;
+    justify-content: center;
+    padding: 1.2vw;
+}
+
+.containerstyle {
+    display: flex;
+    flex-direction: column;
+    padding: 5vw;
+    border-radius: 5vw;
 }
 
 .daytime {
-    background-color: rgba(254, 234, 165, 0.6)
+    background: url('./day.jpg');
+    background-size: cover;
+    color: black;
 }
 
 .nighttime {
-    background-color: rgba(0, 109, 178, 0.5)
+    background: url('./night.jpg');
+    background-size: cover;
+    color: white;
+}
+
+@media only screen and (min-device-width:320px) and (max-device-width: 480px) {
+    .buttonstyle {
+        background: url('./search.png');
+        background-size: cover;
+        border: none;
+        cursor: pointer;
+        width: 30px;
+    }
+
+    .input {
+        width: 80%;
+        padding: 8px;
+    }
+
+    .formstyle {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+    }
 }

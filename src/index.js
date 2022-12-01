@@ -4,10 +4,12 @@ import Gust from './gust.png';
 
   function createInterface() {
     const container = document.createElement('div');
+    const creditImage = document.createElement('span');
     const appName = document.createElement('header');
     const form = document.createElement('form');
     const searchBar = document.createElement('input');
     const submit = document.createElement('button');
+    const formDiv = document.createElement('div');
     const weatherBox = document.createElement('div');
     const weatherInformation = document.createElement('div');
     const weatherIconAndTemp = document.createElement('div');
@@ -28,38 +30,41 @@ import Gust from './gust.png';
     
     humidityImage.src = Humidity;
     gustImage.src = Gust;
-    submit.classList.add('buttonstyle')
-    form.classList.add('formstyle')
+    submit.classList.add('buttonstyle');
+    form.classList.add('formstyle');
+    weatherBox.classList.add('containerstyle');
+    appName.classList.add('header');
+    searchBar.classList.add('input');
     
-    appName.textContent = "Weather Report"
+    appName.textContent = "Weather Report";
     searchBar.type = 'search';
     searchBar.id = 'search';
-    searchBar.placeholder = "California"
+    searchBar.placeholder = "California";
     
     class Imperial {
         constructor() {
-            this.name = "imperial"
-            this.unit = "°F"
-            this.speed = "mph"
+            this.name = "imperial";
+            this.unit = "°F";
+            this.speed = "mph";
             this.temperature;
         }
         changeToFahrenheit() {
-            return this.temperature = ((metric.temperature * (9/5) + 32))
+            return this.temperature = ((metric.temperature * (9/5) + 32));
         }
-    }
+    };
 
     class Metric {
         constructor() {
             this.name = "metric";
-            this.unit = "°C"
+            this.unit = "°C";
             this.speed = "m/s"
             this.temperature;
         }
         changeToCelsius() {
-            return this.temperature = ((imperial.temperature - 32) * (5/9))
+            return this.temperature = ((imperial.temperature - 32) * (5/9));
             
         }
-    }
+    };
 
     const imperial = new Imperial();
     const metric = new Metric();
@@ -73,12 +78,14 @@ import Gust from './gust.png';
             const weatherData = await response.json();
             console.log(weatherData)
             const iconLink = `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
-            let pngFile = weatherData.weather[0].icon
+            let pngFile = weatherData.weather[0].icon;
             let result = pngFile.includes("d");
             if (result === true) {
-                container.classList.add('daytime')
+                weatherBox.classList.add('daytime');
+                creditImage.textContent = "Image Credit: Rinke Dohmen";
             } else {
-                container.classList.add('nighttime')
+                weatherBox.classList.add('nighttime');
+                creditImage.textContent = "Image Credit: Matheo JBT";
             }
             console.log(result)
             return (cityName.textContent = weatherData.name + ", " + weatherData.sys.country,
@@ -126,9 +133,13 @@ import Gust from './gust.png';
             let result = pngFile.includes("d");
             console.log(result)
             if (result === true) {
-                container.classList.add('daytime')
+                weatherBox.classList.remove('nighttime');
+                weatherBox.classList.add('daytime');
+                creditImage.textContent = "Image Credit: Rinke Dohmen";
             } else {
-                container.classList.add('nighttime')
+                weatherBox.classList.remove('daytime');
+                weatherBox.classList.add('nighttime');
+                creditImage.textContent = "Image Credit: Matheo JBT";
             }
             return (cityName.textContent = weatherData.name + ", " + weatherData.sys.country,
                 weatherIcon.src = iconLink,
@@ -144,7 +155,6 @@ import Gust from './gust.png';
             console.error('error', error);
         } 
     };
-
 
     weatherBox.appendChild(cityName);
     weatherIconAndTemp.appendChild(weatherIcon);
@@ -162,10 +172,12 @@ import Gust from './gust.png';
     weatherSubInformation.appendChild(humidityCondition);
     weatherBox.appendChild(weatherInformation);
     weatherBox.appendChild(weatherSubInformation);
+    weatherBox.appendChild(creditImage);
+    formDiv.appendChild(appName)
+    formDiv.appendChild(form);
     form.appendChild(searchBar);
     form.appendChild(submit);
-    container.appendChild(appName);
-    container.appendChild(form);
+    container.appendChild(formDiv);
     container.appendChild(weatherBox);
     return container;
 };
