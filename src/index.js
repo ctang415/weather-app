@@ -30,11 +30,26 @@ import Gust from './gust.png';
     
     humidityImage.src = Humidity;
     gustImage.src = Gust;
+    
     submit.classList.add('buttonstyle');
     form.classList.add('formstyle');
-    weatherBox.classList.add('containerstyle');
+    weatherBox.classList.add('weatherstyle');
     appName.classList.add('header');
     searchBar.classList.add('input');
+    cityName.classList.add('cityname');
+    weatherTemperature.classList.add('mainweather');
+    formDiv.classList.add('formdiv');
+    weatherInformation.classList.add('weatherinformation');
+    weatherIconAndTemp.classList.add('weathericonandtemp');
+    weatherSubInformation.classList.add('weathersubinformation');
+    weatherCondition.classList.add('alignitems');
+    windCondition.classList.add('alignitems');
+    humidityCondition.classList.add('alignitems');
+    weatherConditionImage.classList.add('sizeimage');
+    humidityImage.classList.add('sizeimage');
+    gustImage.classList.add('sizeimage');
+    creditImage.classList.add('imagecredit');
+    weatherIcon.classList.add('sizebigimage')
     
     appName.textContent = "Weather Report";
     searchBar.type = 'search';
