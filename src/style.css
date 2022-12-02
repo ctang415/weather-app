@@ -4,6 +4,39 @@
     font-family: 'Fjalla One';
 }
 
+.loader {
+    display: flex;
+    width: 160px;
+    height: 160px;
+    align-self: center;
+}
+
+.loader:after {
+    content: " ";
+    display: flex;
+    align-self: center;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    border: 12px solid #fff;
+    border-color: #fff transparent #fff transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+      
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+  @keyframes spinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }  
+
 .buttonstyle {
     background: url('./search.png');
     background-size: cover;
@@ -161,5 +194,24 @@
         color: grey;
         font-size: 0.5em;
         padding: 0.5em;
+    }
+
+    .loader {
+        display: flex;
+        width: 160px;
+        height: 160px;
+        align-self: center;
+    }
+    
+    .loader:after {
+        content: " ";
+        display: flex;
+        align-self: center;
+        width: 128px;
+        height: 128px;
+        border-radius: 50%;
+        border: 12px solid #fff;
+        border-color: #fff transparent #fff transparent;
+        animation: lds-dual-ring 1.2s linear infinite;
     }
 }

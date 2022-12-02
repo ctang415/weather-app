@@ -3,8 +3,8 @@ import Humidity from './humidity.png';
 import Gust from './gust.png';
 
   function createInterface() {
+    const box = document.getElementById('box');
     const container = document.createElement('div');
-    const creditImage = document.createElement('span');
     const appName = document.createElement('header');
     const form = document.createElement('form');
     const searchBar = document.createElement('input');
@@ -27,10 +27,17 @@ import Gust from './gust.png';
     const humidityConditionData = document.createElement('span')
     const humidityImage = new Image();
     const gustImage = new Image();
-    
+    const loader = document.createElement('div');
+    const linkDay = document.createElement('a');
+    const linkNight = document.createElement('a');
+    const linkRandom = document.createElement('a');
+
+    linkDay.setAttribute('href', 'https://unsplash.com/@rinked?utm_source=weather_app&utm_medium=referral')
+    linkNight.setAttribute('href', 'https://unsplash.com/@matheo_jbt?utm_source=weather_app&utm_medium=referral')
+
     humidityImage.src = Humidity;
     gustImage.src = Gust;
-    
+
     submit.classList.add('buttonstyle');
     form.classList.add('formstyle');
     weatherBox.classList.add('weatherstyle');
@@ -48,8 +55,10 @@ import Gust from './gust.png';
     weatherConditionImage.classList.add('sizeimage');
     humidityImage.classList.add('sizeimage');
     gustImage.classList.add('sizeimage');
-    creditImage.classList.add('imagecredit');
-    weatherIcon.classList.add('sizebigimage')
+    linkDay.classList.add('imagecredit');
+    linkNight.classList.add('imagecredit');
+    weatherIcon.classList.add('sizebigimage');
+    loader.classList.add('loader')
     
     appName.textContent = "Weather Report";
     searchBar.type = 'search';
@@ -86,10 +95,12 @@ import Gust from './gust.png';
 
     let currentUnit = imperial;
     let currentCity = "California";
+    let lastCity;
 
     async function showWeather() {
         try {
             const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode:'cors'});
+            const imageResponse = await fetch(`https://api.unsplash.com/photos/random?client_id=kBDpFLp85GMfEDOpxfxQvXBIAsqLBaaZG1X2iv1md9s&query=${currentCity}`, { mode: 'cors'});
             const weatherData = await response.json();
             console.log(weatherData)
             const iconLink = `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
@@ -97,16 +108,17 @@ import Gust from './gust.png';
             let result = pngFile.includes("d");
             if (result === true) {
                 weatherBox.classList.add('daytime');
-                creditImage.textContent = "Image Credit: Rinke Dohmen";
+                linkDay.textContent = "Image Credit: Rinke Dohmen on Unsplash";
             } else {
                 weatherBox.classList.add('nighttime');
-                creditImage.textContent = "Image Credit: Matheo JBT";
+                linkNight.textContent = "Image Credit: Matheo JBT on Unsplash";
             }
             console.log(result)
             return (cityName.textContent = weatherData.name + ", " + weatherData.sys.country,
                 weatherIcon.src = iconLink,
                 weatherConditionImage.src = iconLink,
                 weatherTemperature.textContent = Math.round(weatherData.main.temp) + currentUnit.unit,
+                weatherTemperature.setAttribute('id', `${currentCity}`),
                 feelsLikeTemp.textContent = "Feels like " + Math.round(weatherData.main.feels_like) + currentUnit.unit,
                 weatherConditionData.textContent = "Condition: " + weatherData.weather[0].main,
                 windConditionData.textContent = "Wind: " + Math.round(weatherData.wind.speed) + " " + currentUnit.speed , 
@@ -114,7 +126,7 @@ import Gust from './gust.png';
                 console.log(weatherData)
                 );
         } catch(error) {
-            console.error('error', error);
+            console.error('We have an error', error);
         } 
     };
     showWeather();
@@ -131,9 +143,11 @@ import Gust from './gust.png';
         if (currentUnit === imperial) {
             currentUnit = metric;
             console.log(currentUnit)
+            currentCity = weatherTemperature.id;
             getWeatherSearch();
         } else if (currentUnit === metric) {
             currentUnit = imperial;
+            currentCity = weatherTemperature.id;
             getWeatherSearch();
             console.log(currentUnit)
         }
@@ -142,6 +156,7 @@ import Gust from './gust.png';
     async function getWeatherSearch() {
         try {
             const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode: 'cors' });
+            const imageResponse = await fetch(`https://api.unsplash.com/photos/random?client_id=kBDpFLp85GMfEDOpxfxQvXBIAsqLBaaZG1X2iv1md9s&query=${currentCity}`, { mode: 'cors'});
             const weatherData = await response.json();
             const iconLink = `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
             let pngFile = weatherData.weather[0].icon
@@ -150,16 +165,21 @@ import Gust from './gust.png';
             if (result === true) {
                 weatherBox.classList.remove('nighttime');
                 weatherBox.classList.add('daytime');
-                creditImage.textContent = "Image Credit: Rinke Dohmen";
+                linkDay.textContent = "Image Credit: Rinke Dohmen on Unsplash";
+                linkDay.style.display = 'flex'
+                linkNight.style.display = 'none';
             } else {
                 weatherBox.classList.remove('daytime');
                 weatherBox.classList.add('nighttime');
-                creditImage.textContent = "Image Credit: Matheo JBT";
+                linkNight.textContent = "Image Credit: Matheo JBT on Unsplash";
+                linkNight.style.display = 'flex'
+                linkDay.style.display = 'none'
             }
             return (cityName.textContent = weatherData.name + ", " + weatherData.sys.country,
                 weatherIcon.src = iconLink,
                 weatherConditionImage.src = iconLink,
-                weatherTemperature.textContent = Math.round(weatherData.main.temp) + currentUnit.unit, 
+                weatherTemperature.textContent = Math.round(weatherData.main.temp) + currentUnit.unit,
+                weatherTemperature.setAttribute('id', `${currentCity}`),
                 feelsLikeTemp.textContent = "Feels like " + Math.round(weatherData.main.feels_like) + currentUnit.unit,
                 weatherConditionData.textContent = "Condition: " + weatherData.weather[0].main,
                 windConditionData.textContent = "Wind: " + Math.round(weatherData.wind.speed) + " "+ currentUnit.speed, 
@@ -167,7 +187,8 @@ import Gust from './gust.png';
                 console.log(weatherData)
             );
         } catch(error) {
-            console.error('error', error);
+            console.error('We have an error', error);
+            alert('Invalid location. Please try again.');
         } 
     };
 
@@ -187,7 +208,8 @@ import Gust from './gust.png';
     weatherSubInformation.appendChild(humidityCondition);
     weatherBox.appendChild(weatherInformation);
     weatherBox.appendChild(weatherSubInformation);
-    weatherBox.appendChild(creditImage);
+    weatherBox.appendChild(linkDay);
+    weatherBox.appendChild(linkNight);
     formDiv.appendChild(appName)
     formDiv.appendChild(form);
     form.appendChild(searchBar);
