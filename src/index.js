@@ -3,7 +3,6 @@ import Humidity from './humidity.png';
 import Gust from './gust.png';
 
   function createInterface() {
-    const box = document.getElementById('box');
     const container = document.createElement('div');
     const appName = document.createElement('header');
     const form = document.createElement('form');
@@ -71,10 +70,6 @@ import Gust from './gust.png';
             this.name = "imperial";
             this.unit = "°F";
             this.speed = "mph";
-            this.temperature;
-        }
-        changeToFahrenheit() {
-            return this.temperature = ((metric.temperature * (9/5) + 32));
         }
     };
 
@@ -83,11 +78,6 @@ import Gust from './gust.png';
             this.name = "metric";
             this.unit = "°C";
             this.speed = "m/s"
-            this.temperature;
-        }
-        changeToCelsius() {
-            return this.temperature = ((imperial.temperature - 32) * (5/9));
-            
         }
     };
 
@@ -97,20 +87,22 @@ import Gust from './gust.png';
     let currentUnit = imperial;
     let currentCity = "California";
 
-    async function showWeather() {
+    const showWeather = async () => {
         try {
-            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode:'cors'});
-            const imageResponse = await fetch(`https://api.unsplash.com/photos/random?client_id=kBDpFLp85GMfEDOpxfxQvXBIAsqLBaaZG1X2iv1md9s&query=${currentCity}&w=1440&h=720`, { mode: 'cors'});
-            const weatherData = await response.json();
-            const imageResponseData = await imageResponse.json();
-            console.log(imageResponseData);
-            console.log(weatherData)
-            const bgImage = imageResponseData.urls.raw;
-            document.body.style.background = `linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.5)), url('${bgImage}') no-repeat`
-            linkRandom.setAttribute('href', `${imageResponseData.user.links.html}?utm_source=weather_app&utm_medium=referral`)
-            linkRandom.textContent = `Image Credit: ${imageResponseData.user.name} on Unsplash`
-            const iconLink = `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
-            let pngFile = weatherData.weather[0].icon;
+            let responses = await Promise.all([fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode:'cors'}),
+            fetch(`https://api.unsplash.com/photos/random?client_id=kBDpFLp85GMfEDOpxfxQvXBIAsqLBaaZG1X2iv1md9s&query=${currentCity}&fit=max&fm=jpg&w=1080&q=80`, { mode: 'cors'}),
+            ]);
+            let data = await Promise.all (
+                responses.map(async (response) => await response.json())
+            );
+            console.log(data[0])
+            console.log(data[1])
+            const bgImage = data[1].urls.raw;
+            document.body.style.background = `linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.5)), url('${bgImage}') no-repeat center`;
+            linkRandom.setAttribute('href', `${data[1].user.links.html}?utm_source=weather_app&utm_medium=referral`);
+            linkRandom.textContent = `Image Credit: ${data[1].user.name} on Unsplash`;
+            const iconLink = `http://openweathermap.org/img/wn/${data[0].weather[0].icon}@2x.png`;
+            let pngFile = data[0].weather[0].icon;
             let result = pngFile.includes("d");
             if (result === true) {
                 weatherBox.classList.add('daytime');
@@ -119,18 +111,17 @@ import Gust from './gust.png';
                 weatherBox.classList.add('nighttime');
                 linkNight.textContent = "Image Credit: Matheo JBT on Unsplash";
             }
-            console.log(result)
-            return (cityName.textContent = weatherData.name + ", " + weatherData.sys.country,
+             return (cityName.textContent = data[0].name + ", " + data[0].sys.country,
                 weatherIcon.src = iconLink,
                 weatherConditionImage.src = iconLink,
-                weatherTemperature.textContent = Math.round(weatherData.main.temp) + currentUnit.unit,
+                weatherTemperature.textContent = Math.round(data[0].main.temp) + currentUnit.unit,
                 weatherTemperature.setAttribute('id', `${currentCity}`),
-                feelsLikeTemp.textContent = "Feels like " + Math.round(weatherData.main.feels_like) + currentUnit.unit,
-                weatherConditionData.textContent = "Condition: " + weatherData.weather[0].main,
-                windConditionData.textContent = "Wind: " + Math.round(weatherData.wind.speed) + " " + currentUnit.speed , 
-                humidityConditionData.textContent = "Humidity: " + Math.round(weatherData.main.humidity) + "%",
-                console.log(weatherData)
-                );
+                feelsLikeTemp.textContent = "Feels like " + Math.round(data[0].main.feels_like) + currentUnit.unit,
+                weatherConditionData.textContent = "Condition: " + data[0].weather[0].main,
+                windConditionData.textContent = "Wind: " + Math.round(data[0].wind.speed) + " " + currentUnit.speed , 
+                humidityConditionData.textContent = "Humidity: " + Math.round(data[0].main.humidity) + "%",
+                console.log(data[0])
+            );
         } catch(error) {
             console.error('We have an error', error);
         } 
@@ -159,18 +150,20 @@ import Gust from './gust.png';
         }
     });
 
-    async function getWeatherSearch() {
+    const getWeatherSearch = async () => {
         try {
-            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode: 'cors' });
-            const imageResponse = await fetch(`https://api.unsplash.com/photos/random?client_id=kBDpFLp85GMfEDOpxfxQvXBIAsqLBaaZG1X2iv1md9s&query=${currentCity}&w=1440&h=720`, { mode: 'cors'});
-            const weatherData = await response.json();
-            const imageResponseData = await imageResponse.json();
-            const bgImage = imageResponseData.urls.raw;
-            document.body.style.background = `linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.5)), url('${bgImage}') no-repeat`
-            linkRandom.setAttribute('href', `${imageResponseData.user.links.html}?utm_source=weather_app&utm_medium=referral`)
-            linkRandom.textContent = `Image Credit: ${imageResponseData.user.name} on Unsplash`
-            const iconLink = `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`;
-            let pngFile = weatherData.weather[0].icon;
+            let responses = await Promise.all([fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode: 'cors' }),
+            fetch(`https://api.unsplash.com/photos/random?client_id=kBDpFLp85GMfEDOpxfxQvXBIAsqLBaaZG1X2iv1md9s&query=${currentCity}&fit=max&fm=jpg&w=1080&q=80`, { mode: 'cors'})
+            ]);
+            let data = await Promise.all (
+                responses.map(async (response) => await response.json())
+                );
+            const bgImage = data[1].urls.raw;
+            document.body.style.background = `linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.5)), url('${bgImage}') no-repeat center`
+            linkRandom.setAttribute('href', `${data[1].user.links.html}?utm_source=weather_app&utm_medium=referral`)
+            linkRandom.textContent = `Image Credit: ${data[1].user.name} on Unsplash`
+            const iconLink = `http://openweathermap.org/img/wn/${data[0].weather[0].icon}@2x.png`;
+            let pngFile = data[0].weather[0].icon;
             let result = pngFile.includes("d");
             console.log(result)
             if (result === true) {
@@ -186,16 +179,16 @@ import Gust from './gust.png';
                 linkNight.style.display = 'flex'
                 linkDay.style.display = 'none'
             }
-            return (cityName.textContent = weatherData.name + ", " + weatherData.sys.country,
+            return (cityName.textContent = data[0].name + ", " + data[0].sys.country,
                 weatherIcon.src = iconLink,
                 weatherConditionImage.src = iconLink,
-                weatherTemperature.textContent = Math.round(weatherData.main.temp) + currentUnit.unit,
+                weatherTemperature.textContent = Math.round(data[0].main.temp) + currentUnit.unit,
                 weatherTemperature.setAttribute('id', `${currentCity}`),
-                feelsLikeTemp.textContent = "Feels like " + Math.round(weatherData.main.feels_like) + currentUnit.unit,
-                weatherConditionData.textContent = "Condition: " + weatherData.weather[0].main,
-                windConditionData.textContent = "Wind: " + Math.round(weatherData.wind.speed) + " "+ currentUnit.speed, 
-                humidityConditionData.textContent = "Humidity: " + Math.round(weatherData.main.humidity) + "%",
-                console.log(weatherData)
+                feelsLikeTemp.textContent = "Feels like " + Math.round(data[0].main.feels_like) + currentUnit.unit,
+                weatherConditionData.textContent = "Condition: " + data[0].weather[0].main,
+                windConditionData.textContent = "Wind: " + Math.round(data[0].wind.speed) + " "+ currentUnit.speed, 
+                humidityConditionData.textContent = "Humidity: " + Math.round(data[0].main.humidity) + "%",
+                console.log(data[0])
             );
         } catch(error) {
             console.error('We have an error', error);

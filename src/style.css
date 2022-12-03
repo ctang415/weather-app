@@ -38,7 +38,7 @@
   }  
 
 .buttonstyle {
-    background: url('./search.png');
+    background: url('./search2.png');
     background-size: cover;
     border: none;
     cursor: pointer;
@@ -150,7 +150,7 @@
 
 @media only screen and (min-device-width:320px) and (max-device-width: 480px) {
     .buttonstyle {
-        background: url('./search.png');
+        background: url('./search2.png');
         background-size: cover;
         border: none;
         cursor: pointer;
