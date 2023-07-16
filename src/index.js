@@ -71,7 +71,7 @@ import Gust from './gust.png';
             this.unit = "°F";
             this.speed = "mph";
         }
-    };
+    }
 
     class Metric {
         constructor() {
@@ -79,7 +79,7 @@ import Gust from './gust.png';
             this.unit = "°C";
             this.speed = "m/s"
         }
-    };
+    }
 
     const imperial = new Imperial();
     const metric = new Metric();
@@ -222,6 +222,6 @@ import Gust from './gust.png';
     container.appendChild(weatherBox);
     container.appendChild(linkRandom);
     return container;
-};
+}
 
   document.getElementById('box').appendChild(createInterface());
