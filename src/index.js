@@ -1,3 +1,4 @@
+require('dotenv').config() 
 import './style.css';
 import Humidity from './humidity.png';
 import Gust from './gust.png';
@@ -89,8 +90,8 @@ import Gust from './gust.png';
 
     const showWeather = async () => {
         try {
-            let responses = await Promise.all([fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode:'cors'}),
-            fetch(`https://api.unsplash.com/photos/random?client_id=kBDpFLp85GMfEDOpxfxQvXBIAsqLBaaZG1X2iv1md9s&query=${currentCity}&fit=max&fm=jpg&w=1080&q=80`, { mode: 'cors'}),
+            let responses = await Promise.all([fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid={${process.env.api_key_weather}}&units=${currentUnit.name}`, { mode:'cors'}),
+            fetch(`https://api.unsplash.com/photos/random?client_id=${process.env.api_key}&query=${currentCity}&fit=max&fm=jpg&w=1080&q=80`, { mode: 'cors'}),
             ]);
             let data = await Promise.all (
                 responses.map(async (response) => await response.json())
@@ -152,8 +153,8 @@ import Gust from './gust.png';
 
     const getWeatherSearch = async () => {
         try {
-            let responses = await Promise.all([fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=78c5b0d1c5ebe06e9744589142cf4344&units=${currentUnit.name}`, { mode: 'cors' }),
-            fetch(`https://api.unsplash.com/photos/random?client_id=kBDpFLp85GMfEDOpxfxQvXBIAsqLBaaZG1X2iv1md9s&query=${currentCity}&fit=max&fm=jpg&w=1080&q=80`, { mode: 'cors'})
+            let responses = await Promise.all([fetch(`https://api.openweathermap.org/data/2.5/weather?q=${currentCity}&appid=${process.env.api_key_weather}&units=${currentUnit.name}`, { mode: 'cors' }),
+            fetch(`https://api.unsplash.com/photos/random?client_id=${process.env.api_key}&query=${currentCity}&fit=max&fm=jpg&w=1080&q=80`, { mode: 'cors'})
             ]);
             let data = await Promise.all (
                 responses.map(async (response) => await response.json())
